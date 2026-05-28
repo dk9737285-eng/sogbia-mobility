@@ -17,12 +17,34 @@ jobs:
         uses: actions/checkout@v4
 
       # ----------------------------------------------------
+      # AUTO-DETECT XCODE PROJECT PATHS & SCHEME
+      # ----------------------------------------------------
+      - name: Auto-Detect Project Files
+        id: detect
+        run: |
+          PROJECT_PATH=$(find . -name "*.xcodeproj" -type d | head -n 1)
+          if [ -z "$PROJECT_PATH" ]; then
+            echo "Error: Could not find any .xcodeproj file in the repository!"
+            exit 1
+          fi
+          echo "PROJECT_PATH=$PROJECT_PATH" >> $GITHUB_ENV
+          echo "Found Xcode project at: $PROJECT_PATH"
+          
+          # Auto-extract scheme name
+          SCHEME_NAME=$(xcodebuild -list -project "$PROJECT_PATH" | sed -n '/Schemes:/{n;p;}' | tr -d ' ')
+          if [ -z "$SCHEME_NAME" ]; then
+            SCHEME_NAME="SogBia"
+          fi
+          echo "SCHEME_NAME=$SCHEME_NAME" >> $GITHUB_ENV
+          echo "Auto-detected scheme name: $SCHEME_NAME"
+
+      # ----------------------------------------------------
       # 1. BUILD FOR NATIVE PHYSICAL IPHONE (.IPA)
       # ----------------------------------------------------
       - name: Build for Physical iPhone (Device)
         run: |
-          xcodebuild -project sogbia-ios/SogBia.xcodeproj \
-                     -scheme SogBia \
+          xcodebuild -project "${{ env.PROJECT_PATH }}" \
+                     -scheme "${{ env.SCHEME_NAME }}" \
                      -sdk iphoneos \
                      -configuration Release \
                      clean build \
@@ -31,19 +53,17 @@ jobs:
 
       - name: Package as .IPA (For Sideloading on Windows)
         run: |
-          # Find the compiled .app file for physical devices
-          DEVICE_APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "SogBia.app" -path "*/Release-iphoneos/*" -type d | head -n 1)
+          # Find compiled .app for physical device
+          DEVICE_APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "*.app" -path "*/Release-iphoneos/*" -type d | head -n 1)
           if [ -z "$DEVICE_APP_PATH" ]; then
-            echo "Could not find Release-iphoneos SogBia.app"
+            echo "Error: Could not find compiled app binary!"
             exit 1
           fi
           echo "Found Device App at: $DEVICE_APP_PATH"
           
-          # Create Payload directory and copy the app inside to conform to IPA standards
           mkdir -p ~/Payload
           cp -r "$DEVICE_APP_PATH" ~/Payload/
           
-          # Zip it into a standard installable .ipa file
           cd ~
           zip -r SogBia.ipa Payload
           mv SogBia.ipa $GITHUB_WORKSPACE/
@@ -53,8 +73,8 @@ jobs:
       # ----------------------------------------------------
       - name: Build for iOS Simulator
         run: |
-          xcodebuild -project sogbia-ios/SogBia.xcodeproj \
-                     -scheme SogBia \
+          xcodebuild -project "${{ env.PROJECT_PATH }}" \
+                     -scheme "${{ env.SCHEME_NAME }}" \
                      -sdk iphonesimulator \
                      -configuration Debug \
                      clean build \
@@ -63,15 +83,15 @@ jobs:
 
       - name: Package Simulator App
         run: |
-          SIM_APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "SogBia.app" -path "*/Debug-iphonesimulator/*" -type d | head -n 1)
+          SIM_APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "*.app" -path "*/Debug-iphonesimulator/*" -type d | head -n 1)
           if [ -z "$SIM_APP_PATH" ]; then
-            echo "Could not find Debug-iphonesimulator SogBia.app"
+            echo "Error: Could not find compiled simulator binary!"
             exit 1
           fi
           echo "Found Simulator App at: $SIM_APP_PATH"
           
           cd "$(dirname "$SIM_APP_PATH")"
-          zip -r $GITHUB_WORKSPACE/SogBia-iPhone-Simulator.zip SogBia.app
+          zip -r $GITHUB_WORKSPACE/SogBia-iPhone-Simulator.zip $(basename "$SIM_APP_PATH")
 
       # ----------------------------------------------------
       # 3. UPLOAD THE BUILD PRODUCTS
