@@ -13,7 +13,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		8A1E35B12BFD3D12000A2C9B /* SogBia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SogBia.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A1E35B12BFD3D12000A2C9F /* SogBia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SogBia.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A1E35B72BFD3D12000A2C9B /* SogBiaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SogBiaApp.swift; sourceTree = "<group>"; };
 		8A1E35B82BFD3D12000A2C9B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		8A1E35B92BFD3D12000A2C9B /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
@@ -35,7 +35,7 @@
 			isa = PBXGroup;
 			children = (
 				8A1E35B62BFD3D12000A2C9B /* SogBia */,
-				8A1E35B12BFD3D12000A2C9B /* Products */,
+				8A1E35B12BFD3D12000A2C9E /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -50,10 +50,10 @@
 			path = SogBia;
 			sourceTree = "<group>";
 		};
-		8A1E35B12BFD3D12000A2C9B /* Products */ = {
+		8A1E35B12BFD3D12000A2C9E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8A1E35B12BFD3D12000A2C9B /* SogBia.app */,
+				8A1E35B12BFD3D12000A2C9F /* SogBia.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -75,7 +75,7 @@
 			);
 			name = SogBia;
 			productName = SogBia;
-			productReference = 8A1E35B12BFD3D12000A2C9B /* SogBia.app */;
+			productReference = 8A1E35B12BFD3D12000A2C9F /* SogBia.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -104,7 +104,7 @@
 				Base,
 			);
 			mainGroup = 8A1E35B52BFD3D12000A2C9B;
-			productRefGroup = 8A1E35B12BFD3D12000A2C9B /* Products */;
+			productRefGroup = 8A1E35B12BFD3D12000A2C9E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
